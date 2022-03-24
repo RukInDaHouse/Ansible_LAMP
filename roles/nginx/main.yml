@@ -1,4 +1,0 @@
-- name: Install Nginx Web Server on Debian Family
-  apt:
-    name=nginx
-    state=latest
