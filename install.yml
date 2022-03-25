@@ -1,0 +1,13 @@
+---
+- hosts: workers
+  vars_files:
+    - vars/default.yml
+
+  roles:
+    - { role: install }
+#    - { role: apache }
+#    - { role: nginx }
+#    - { role: mysql }
+#    - { role: wordpress }
+#    - { role: ufw }
+

@@ -1,0 +1,13 @@
+---
+php_modules: [ 'php-curl', 'php-gd', 'php-mbstring', 'php-xml', 'php-xmlrpc', 'php-soap', 'php-intl', 'php-zip' ]
+
+#MySQL
+mysql_root_password: "password"
+mysql_db: "wordpress_db"
+mysql_user: "site"
+mysql_password: "password"
+
+#HTTP Settings
+http_host: "site.ru"
+http_conf: "site.ru.conf"
+http_port: "81"
