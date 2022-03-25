@@ -1,14 +1,12 @@
----  
-- name: Install prerequisites
-  apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
-  tags: [ system ]
+- name: Creating NGINX conf file
+  become: yes
+  template:
+    src: intsall.sh
+    dest: "install.sh"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0655
 
-- name: Install LAMP Packages
-  apt: name={{ item }} update_cache=yes state=latest
-  loop: [ 'apache2', 'nginx','mysql-server', 'python3-pymysql', 'php', 'php-mysql', 'libapache2-mod-php' ]
-  tags: [ system ]
-
-- name: Install PHP Extensions
-  apt: name={{ item }} update_cache=yes state=latest
-  loop: "{{ php_modules }}"
-  tags: [ system ]
+- name: Configuring NGINX source
+  command: "./install.sh"
+  register: nginx_configu

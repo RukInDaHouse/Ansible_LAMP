@@ -5,9 +5,9 @@
 
   roles:
     - { role: install }
-    - { role: apache }
-    - { role: nginx }
-    - { role: mysql }
-    - { role: wordpress }
-    - { role: ufw }
+#    - { role: apache }
+#    - { role: nginx }
+#    - { role: mysql }
+#    - { role: wordpress }
+#    - { role: ufw }
 
