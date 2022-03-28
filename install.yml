@@ -4,6 +4,7 @@
     - vars/default.yml
 
   roles:
+    - { role: create_dirs }
     - { role: install }
 #    - { role: apache }
 #    - { role: nginx }

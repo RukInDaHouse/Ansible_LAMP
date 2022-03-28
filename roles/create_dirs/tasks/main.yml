@@ -1,0 +1,50 @@
+---
+# tasks file for ./roles/create_dirs
+- name: Create required Nginx dirs (/usr/local/src/nginx/modules)
+  become: yes
+  file:
+    path: /usr/local/src/nginx/modules
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Nginx dirs (/var/cache/nginx)
+  become: yes
+  file:
+    path: /var/cache/nginx
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: Create required Nginx dirs (/etc/nginx/sites-available)
+  become: yes
+  file:
+    path: /etc/nginx/sites-available
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: Create required Nginx dirs (/etc/nginx/sites-enabled
+  become: yes
+  file:
+    path: /etc/nginx/sites-enabled
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: Create required Nginx dirs (/etc/nginx/conf.d)
+  become: yes
+  file:
+    path: /etc/nginx/conf.d
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Nginx dirs (/etc/nginx/conf.d)
+  become: yes
+  file:
+    path: /etc/nginx/conf.d
+    state: directory
+    owner: root
+    mode: 0755
+
