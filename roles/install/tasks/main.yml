@@ -54,7 +54,7 @@
 
 - name: Download NGINX config
   get_url:
-    url: "https://raw.githubusercontent.com/RukInDaHouse/configs/f32ef395a0e70759f44f7ddb98ace22367b51210/nginx/nginx.conf"
+    url: "{{nginx.conf_link}}"
     dest: "/etc/nginx/nginx.conf"
   register: nginx_config_download
 
@@ -68,7 +68,7 @@
 
 - name: Downloading NGINX system config
   get_url:
-    url: "https://raw.githubusercontent.com/RukInDaHouse/configs/f32ef395a0e70759f44f7ddb98ace22367b51210/nginx/nginx.service"
+    url: "{{nginx.conf_link}}"
     dest: "/lib/systemd/system/nginx.service"
   register: nginx_system_config_download
 
