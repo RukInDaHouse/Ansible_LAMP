@@ -1,83 +1,9 @@
 ---
 # tasks file for ./roles/install
-- name: Installing NGINX Dependencies
-  become: yes
-  apt:
-    name: "{{ item }}"
-    update_cache: yes
-  with_items:
-    - autoconf
-    - automake
-    - build-essential
-    - ca-certificates
-    - cmake
-    - curl
-    - git
-    - libpcre3
-    - libpcre3-dev
-    - libssl-dev
-    - libtool
-    - libxml2-dev
-    - libxslt1-dev
-    - lsb-release
-    - tar
-    - uuid-dev
-    - unzip
-    - wget
-    - zlib1g-dev
-    
-- name: Downloading NGINX sources
-  get_url:
-    url: "{{ nginx_tarball_url }}"
-    dest: "{{ nginx_install_dir }}{{ nginx_version }}.tar.gz"
-  register: nginx_source
 
-- name: Unpacking NGINX
-  unarchive:
-    copy: no
-    dest: "{{ nginx_install_dir }}"
-    src: "{{ nginx_install_dir }}{{ nginx_version }}.tar.gz"
-  when: nginx_source.changed
-  register: nginx_source_unpack
-
-- name: Configuring NGINX source
-  command: "./configure {{ nginx_custom_config }} {{ nginx_custom_modules }}"
-  args:
-    chdir: "{{ nginx_install_dir }}{{ nginx_version }}"
-  when: nginx_source_unpack.changed
-  register: nginx_configure
-
-- name: Download NGINX config
-  get_url:
-    url: "{{ nginx_conf_url }}"
-    dest: "/etc/nginx/nginx.conf"
-  register: nginx_config_download
-
-- name: Installing NGINX
-  become: yes
-  shell: make && make install
-  args:
-    chdir: "{{ nginx_install_dir }}{{ nginx_version }}"
-  when: nginx_configure
-  register: nginx_install
-
-- name: Downloading NGINX system config
-  get_url:
-    url: "{{ nginx_service_url }}"
-    dest: "/lib/systemd/system/nginx.service"
-  register: nginx_system_config_download
-
-- name: Enable NGINX system
-  command: "systemctl enable nginx"
-  args:
-    chdir: "/lib/systemd/system/"
-  when: nginx_system_config_download.changed
-  register: nginx_system_enable
-
-- name: Restart NGINX system
-  command: "systemctl restart nginx"
-  args:
-    chdir: "/lib/systemd/system/"
-  when: nginx_system_enable.changed
-  register: nginx_system_restart
+- name: Install Nginx
+  import_tasks: nginx.yml
+  
+- name: Install Apache
+  import_tasks: apache.yml
 

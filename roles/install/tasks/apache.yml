@@ -1,0 +1,62 @@
+---
+# tasks file for ./roles/install (Apache)
+
+- name: Download Apache sources
+  get_url:
+    url: "{{ apache_tarball_url }}"
+    dest: "{{ apache_install_dir }}{{ apache_version }}.tar.gz"
+  register: apache_source
+  
+- name: Download apr sources
+  get_url:
+    url: "https://dlcdn.apache.org//apr/apr-1.7.0.tar.gz"
+    dest: "{{ apache_install_dir }}apr-1.7.0.tar.gz"
+  register: apache_apr
+
+- name: Download apr-util sources
+  get_url:
+    url: "https://dlcdn.apache.org//apr/apr-util-1.6.1.tar.gz"
+    dest: "{{ apache_install_dir }}apr-util-1.6.1.tar.gz"
+  register: apache_apr_util
+
+- name: Unpack Apache
+  unarchive:
+    copy: no
+    dest: "{{ apache_install_dir }}"
+    src: "{{ apache_install_dir }}{{ apache_version }}.tar.gz"
+  register: apache_source_unpack
+
+- name: Configure Apache source
+  command: "./configure {{ apache_custom_config }}"
+  args:
+    chdir: "/usr/local/src/apache/httpd-2.4.53"
+
+- name: Install Apache
+  become: yes
+  shell: make && make install
+  args:
+    chdir: "/usr/local/src/apache/httpd-2.4.53/"
+
+- name: Download Apache config
+  get_url:
+    url: "{{ apache_conf_url }}"
+    dest: "/usr/local/apache/conf/httpd.conf"
+  register: apache_config_download
+  
+- name: Download Apache system
+  get_url:
+    url: "{{ apache_service_url }}"
+    dest: "/etc/systemd/system/httpd.service"
+  register: apache_system_download
+  
+- name: Enable Apache system
+  command: "systemctl enable httpd"
+  args:
+    chdir: "/lib/systemd/system/"
+  register: apache_system_enable
+  
+- name: Restart Apache system
+  command: "systemctl restart httpd"
+  args:
+    chdir: "/lib/systemd/system/"
+  register: apache_system_restart 

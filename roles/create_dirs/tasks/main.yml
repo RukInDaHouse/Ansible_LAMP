@@ -1,5 +1,35 @@
 ---
 # tasks file for ./roles/create_dirs
+
+- name: Install Dependencies
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - libapr1
+    - libapr1-dev
+    - libaprutil1-dev 
+    - autoconf
+    - automake
+    - build-essential
+    - ca-certificates
+    - cmake
+    - curl
+    - git
+    - libpcre3
+    - libpcre3-dev
+    - libssl-dev
+    - libtool
+    - libxml2-dev
+    - libxslt1-dev
+    - lsb-release
+    - tar
+    - uuid-dev
+    - unzip
+    - wget
+    - zlib1g-dev
+    
 - name: Update and upgrade apt packages
   become: true
   apt:
@@ -7,43 +37,8 @@
     update_cache: yes
     cache_valid_time: 86400 #One day
 
-- name: Create required Nginx dirs (/usr/local/src/nginx/modules)
-  become: yes
-  file:
-    path: /usr/local/src/nginx/modules
-    state: directory
-    owner: root
-    mode: 0755
-    
-- name: Create required Nginx dirs (/var/cache/nginx)
-  become: yes
-  file:
-    path: /var/cache/nginx
-    state: directory
-    owner: root
-    mode: 0755
-
-- name: Create required Nginx dirs (/etc/nginx/sites-available)
-  become: yes
-  file:
-    path: /etc/nginx/sites-available
-    state: directory
-    owner: root
-    mode: 0755
-
-- name: Create required Nginx dirs (/etc/nginx/sites-enabled
-  become: yes
-  file:
-    path: /etc/nginx/sites-enabled
-    state: directory
-    owner: root
-    mode: 0755
-
-- name: Create required Nginx dirs (/etc/nginx/conf.d)
-  become: yes
-  file:
-    path: /etc/nginx/conf.d
-    state: directory
-    owner: root
-    mode: 0755
-
+- name: Create dirs for Nginx
+  import_tasks: nginx.yml
+  
+- name: Create dirs for Apache
+  import_tasks: apache.yml
