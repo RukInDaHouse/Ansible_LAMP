@@ -1,12 +1,11 @@
-- name: Creating NGINX conf file
-  become: yes
-  template:
-    src: intsall.sh
-    dest: "install.sh"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0655
+---
+# tasks file for ./roles/install
 
-- name: Configuring NGINX source
-  command: "./install.sh"
-  register: nginx_configu
+- name: Install Nginx
+  import_tasks: nginx.yml
+  
+- name: Install Apache
+  import_tasks: apache.yml
+
+- name: Install MySql
+  import_tasks: mysql.yml

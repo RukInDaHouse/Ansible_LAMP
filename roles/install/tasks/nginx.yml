@@ -1,0 +1,64 @@
+---
+# tasks file for ./roles/install (Nginx)
+
+- name: Download Nginx sources
+  get_url:
+    url: "{{ nginx_tarball_url }}"
+    dest: "{{ nginx_install_dir }}{{ nginx_version }}.tar.gz"
+  register: nginx_source
+
+- name: Unpack Nginx
+  unarchive:
+    copy: no
+    dest: "{{ nginx_install_dir }}"
+    src: "{{ nginx_install_dir }}{{ nginx_version }}.tar.gz"
+  when: nginx_source.changed
+  register: nginx_source_unpack
+
+- name: Configure Nginx source
+  command: "./configure {{ nginx_custom_config }} {{ nginx_custom_modules }}"
+  args:
+    chdir: "{{ nginx_install_dir }}{{ nginx_version }}"
+  when: nginx_source_unpack.changed
+  register: nginx_configure
+
+- name: Download Nginx config
+  get_url:
+    url: "{{ nginx_conf_url }}"
+    dest: "/etc/nginx/nginx.conf"
+  register: nginx_config_download
+
+- name: Install Nginx
+  become: yes
+  shell: make && make install
+  args:
+    chdir: "{{ nginx_install_dir }}{{ nginx_version }}"
+  when: nginx_config_download.changed
+  register: nginx_install
+  
+- name: Remove Nginx debugging symbols
+  become: yes
+  command: "strip -s /usr/sbin/nginx"
+  when: nginx_install.changed
+  register: nginx_remove_debugging_symbols
+
+- name: Download Nginx system config
+  get_url:
+    url: "{{ nginx_service_url }}"
+    dest: "/lib/systemd/system/nginx.service"
+  register: nginx_system_config_download
+
+- name: Enable Nginx system
+  command: "systemctl enable nginx"
+  args:
+    chdir: "/lib/systemd/system/"
+  when: nginx_system_config_download.changed
+  register: nginx_system_enable
+
+- name: Restart Nginx system
+  command: "systemctl restart nginx"
+  args:
+    chdir: "/lib/systemd/system/"
+  when: nginx_system_enable.changed
+  register: nginx_system_restart
+

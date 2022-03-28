@@ -1,0 +1,11 @@
+---
+# tasks file for ./roles/remove_temp
+- name: Remove Nginx temp
+  become: yes
+  command: "rm -r /usr/local/src/nginx"
+  register: nginx_remove_temp
+  
+- name: Remove Apache temp
+  become: yes
+  command: "rm -r /usr/local/src/apache"
+  register: apache_remove_temp

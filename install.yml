@@ -4,10 +4,12 @@
     - vars/default.yml
 
   roles:
+    - { role: create_dirs }
     - { role: install }
 #    - { role: apache }
 #    - { role: nginx }
 #    - { role: mysql }
 #    - { role: wordpress }
 #    - { role: ufw }
+    - { role: remove_temp }
 

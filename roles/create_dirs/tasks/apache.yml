@@ -1,0 +1,67 @@
+---
+# tasks file for ./roles/create_dirs
+
+- name: Create required Nginx dirs (/usr/local/src/apache/modules)
+  become: yes
+  file:
+    path: /usr/local/src/apache/modules
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: Create required Apache dirs (/etc/httpd/conf.modules.d)
+  become: yes
+  file:
+    path: /etc/httpd/conf.modules.d
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Apache dirs (/var/www/site-2.ru)
+  become: yes
+  file:
+    path: /var/www/site-2.ru
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Apache dirs (/var/www/site-2.ru/log/apache2)
+  become: yes
+  file:
+    path: /var/www/site-2.ru/log/apache2
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Apache dirs (/var/www/site-2.ru/tmp)
+  become: yes
+  file:
+    path: /var/www/site-2.ru/tmp
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Apache dirs (/var/www/site-2.ru/sess)
+  become: yes
+  file:
+    path: /var/www/site-2.ru/sess
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Apache dirs (/var/www/site-2.ru/upload)
+  become: yes
+  file:
+    path: /var/www/site-2.ru/upload
+    state: directory
+    owner: root
+    mode: 0755
+    
+- name: Create required Apache dirs (/var/www/site-2.ru/data)
+  become: yes
+  file:
+    path: /var/www/site-2.ru/data
+    state: directory
+    owner: root
+    mode: 0755
+
