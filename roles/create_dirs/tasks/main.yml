@@ -42,3 +42,6 @@
   
 - name: Create dirs for Apache
   import_tasks: apache.yml
+  
+- name: Create dirs for MySql
+  import_tasks: mysql.yml

@@ -7,3 +7,5 @@
 - name: Install Apache
   import_tasks: apache.yml
 
+- name: Install MySql
+  import_tasks: mysql.yml
