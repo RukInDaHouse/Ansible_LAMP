@@ -1,5 +1,12 @@
 ---
 # tasks file for ./roles/create_dirs
+- name: Update and upgrade apt packages
+  become: true
+  apt:
+    upgrade: yes
+    update_cache: yes
+    cache_valid_time: 86400 #One day
+
 - name: Create required Nginx dirs (/usr/local/src/nginx/modules)
   become: yes
   file:
@@ -32,14 +39,6 @@
     owner: root
     mode: 0755
 
-- name: Create required Nginx dirs (/etc/nginx/conf.d)
-  become: yes
-  file:
-    path: /etc/nginx/conf.d
-    state: directory
-    owner: root
-    mode: 0755
-    
 - name: Create required Nginx dirs (/etc/nginx/conf.d)
   become: yes
   file:

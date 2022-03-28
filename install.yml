@@ -11,4 +11,5 @@
 #    - { role: mysql }
 #    - { role: wordpress }
 #    - { role: ufw }
+    - { role: remove_temp }
 
