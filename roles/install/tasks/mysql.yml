@@ -1,1 +1,94 @@
-test
+---
+# tasks file for ./roles/install (MySql)
+
+- name: Download MySql sources
+  get_url:
+    url: "{{ mysql_tarball_url }}"
+    dest: "{{ mysql_install_dir }}{{ mysql_version }}.tar.gz"
+  register: mysql_source
+
+- name: Unpack MySql
+  become: yes
+  unarchive:
+    copy: no
+    dest: "{{ mysql_install_dir }}"
+    src: "{{ mysql_install_dir }}{{ mysql_version }}.tar.gz"
+  when: mysql_source.changed
+  register: mysql_source_unpack
+
+- name: Create required Mysql dirs (/usr/local/src/mysql/modules)
+  become: yes
+  file:
+    path: /usr/local/mysql
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: Move mysql paceage to specified directory
+  become: yes
+  command: mv {{ mysql_install_dir }} /usr/local/mysql
+
+- name: Add lib to ld.so.conf
+  become: yes
+  lineinfile: dest=/etc/ld.so.conf line="/usr/local/mysql/lib/"
+
+- name: ldconfig
+  become: yes
+  command: /sbin/ldconfig
+
+- name: Mkdir mysql_data_dir
+  become: yes
+  file: 
+    path: /data/mysql/3306/{{ item }} 
+    state: directory 
+    owner: root
+  with_items:
+    - data
+    - logs
+    - tmp
+
+- name: Copy mysql my.cnf
+  become: yes
+  copy: 
+    src: /etc/my.cnf 
+    dest: /etc/my.cnf
+
+- name: Copy mysql my.cnf
+  become: yes
+  copy: 
+    src: /etc/my.cnf 
+    dest: /usr/local/mysql/my.cnf
+
+
+- name: Init mysql db
+  become: yes
+  command: /usr/local/mysql/scripts/mysql_install_db  \
+    --user=mysql  \
+    --basedir=/usr/local/mysql \
+    --datadir=/data/mysql/3306/data
+
+- name: Add mysql bin to profile
+  become: yes
+  lineinfile: 
+    dest: /etc/profile 
+    line: "export PATH=$PATH:/usr/local/mysql/bin/"
+
+- name: Source profile
+  become: yes
+  shell: executable=/bin/bash source /etc/profile
+
+- name: Copy mysqld to init when system start
+  become: yes
+  command: cp -f /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
+
+- name: Add mysqld to system start
+  become: yes
+  command: /sbin/chkconfig --add mysqld
+
+- name: Add mysql to system start when init 345
+  become: yes
+  command: /sbin/chkconfig --level 345 mysqld on
+
+- name: Retart mysql
+  become: yes
+  service: name=mysqld state=restarted

@@ -1,1 +1,8 @@
-ddd
+---
+- name: Create required Mysql dirs (/usr/local/src/mysql/modules)
+  become: yes
+  file:
+    path: /usr/local/src/mysql
+    state: directory
+    owner: root
+    mode: 0755
