@@ -1,94 +1,68 @@
 ---
 # tasks file for ./roles/install (MySql)
 
-- name: Download MySql sources
+- name: Download Boost
   get_url:
-    url: "{{ mysql_tarball_url }}"
-    dest: "{{ mysql_install_dir }}{{ mysql_version }}.tar.gz"
-  register: mysql_source
-
-- name: Unpack MySql
-  become: yes
+    url: "https://boostorg.jfrog.io/artifactory/main/release/1.73.0/source/boost_1_73_0.tar.gz"
+    dest: "{{ mysql_install_dir }}.tar.gz"
+  
+- name: Unpack Boost
   unarchive:
     copy: no
-    dest: "{{ mysql_install_dir }}"
-    src: "{{ mysql_install_dir }}{{ mysql_version }}.tar.gz"
-  when: mysql_source.changed
-  register: mysql_source_unpack
+    dest: "{{ mysql_install_dir }}boost_1_73_0"
+    src: "{{ mysql_install_dir }}boost_1_73_0.tar.gz"
+  when: nginx_source.changed
+  
+- name: Download MySql sources
+  get_url:
+    url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.28.tar.gz"
+    dest: "{{ nginx_install_dir }}{{ nginx_version }}.tar.gz"
 
-- name: Create required Mysql dirs (/usr/local/src/mysql/modules)
+- name: Unpack Mysql
+  unarchive:
+    copy: no
+    dest: "{{ nginx_install_dir }}"
+    src: "{{ nginx_install_dir }}mysql-boost-8.0.28.tar.gz.tar.gz"
+
+- name: Configure Mysql source
+  command: "cmake .. -DWITH_BOOST={{ mysql_install_dir }}boost_1_73_0"
+  args:
+    chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
+  register: mysql_conf1
+  
+- name: Configure Mysql source
+  command: "make"
+  args:
+    chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
+  register: mysql_conf1
+  
+- name: Configure Mysql source
+  command: "make install"
+  args:
+    chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
+  register: mysql_conf1
+  
+- name: Create required Nginx dirs
   become: yes
   file:
-    path: /usr/local/mysql
+    path: "/usr/local/mysql/mysql-files"
     state: directory
     owner: root
-    mode: 0755
+    mode: 0755  
 
-- name: Move mysql paceage to specified directory
-  become: yes
-  command: mv {{ mysql_install_dir }} /usr/local/mysql
+- name: Configure Mysql source
+  command: "bin/mysqld --initialize --user=mysql"
+  args:
+    chdir: "/usr/local/mysql"
 
-- name: Add lib to ld.so.conf
-  become: yes
-  lineinfile: dest=/etc/ld.so.conf line="/usr/local/mysql/lib/"
-
-- name: ldconfig
-  become: yes
-  command: /sbin/ldconfig
-
-- name: Mkdir mysql_data_dir
-  become: yes
-  file: 
-    path: /data/mysql/3306/{{ item }} 
-    state: directory 
-    owner: root
-  with_items:
-    - data
-    - logs
-    - tmp
-
-- name: Copy mysql my.cnf
-  become: yes
-  copy: 
-    src: /etc/my.cnf 
-    dest: /etc/my.cnf
-
-- name: Copy mysql my.cnf
-  become: yes
-  copy: 
-    src: /etc/my.cnf 
-    dest: /usr/local/mysql/my.cnf
-
-
-- name: Init mysql db
-  become: yes
-  command: /usr/local/mysql/scripts/mysql_install_db  \
-    --user=mysql  \
-    --basedir=/usr/local/mysql \
-    --datadir=/data/mysql/3306/data
-
-- name: Add mysql bin to profile
-  become: yes
-  lineinfile: 
-    dest: /etc/profile 
-    line: "export PATH=$PATH:/usr/local/mysql/bin/"
-
-- name: Source profile
-  become: yes
-  shell: executable=/bin/bash source /etc/profile
-
-- name: Copy mysqld to init when system start
-  become: yes
-  command: cp -f /usr/local/mysql/support-files/mysql.server /etc/init.d/mysqld
-
-- name: Add mysqld to system start
-  become: yes
-  command: /sbin/chkconfig --add mysqld
-
-- name: Add mysql to system start when init 345
-  become: yes
-  command: /sbin/chkconfig --level 345 mysqld on
-
-- name: Retart mysql
-  become: yes
-  service: name=mysqld state=restarted
+  
+- name: Configure Mysql source
+  command: "bin/mysql_ssl_rsa_setup"
+  args:
+    chdir: "/usr/local/mysql"
+    
+- name: Configure Mysql source
+  command: "bin/mysqld_safe --user=mysql &"
+  args:
+    chdir: "/usr/local/mysql"
+ 
