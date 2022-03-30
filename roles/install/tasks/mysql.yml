@@ -24,25 +24,25 @@
     dest: "{{ nginx_install_dir }}"
     src: "{{ nginx_install_dir }}mysql-boost-8.0.28.tar.gz.tar.gz"
 
-- name: Configure Mysql source
+- name: Configure Mysql install with Cmake
   command: "cmake .. -DWITH_BOOST={{ mysql_install_dir }}boost_1_73_0"
   args:
     chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
   register: mysql_conf1
   
-- name: Configure Mysql source
+- name: Make Mysql
   command: "make"
   args:
     chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
   register: mysql_conf1
   
-- name: Configure Mysql source
+- name: Install Mysql
   command: "make install"
   args:
     chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
   register: mysql_conf1
   
-- name: Create required Nginx dirs
+- name: Create required Mysql dirs
   become: yes
   file:
     path: "/usr/local/mysql/mysql-files"
@@ -50,18 +50,17 @@
     owner: root
     mode: 0755  
 
-- name: Configure Mysql source
+- name: Configure Mysql source (Part 1)
   command: "bin/mysqld --initialize --user=mysql"
   args:
     chdir: "/usr/local/mysql"
-
   
-- name: Configure Mysql source
+- name: Configure Mysql source (Part 2)
   command: "bin/mysql_ssl_rsa_setup"
   args:
     chdir: "/usr/local/mysql"
     
-- name: Configure Mysql source
+- name: Configure Mysql source (Part 3)
   command: "bin/mysqld_safe --user=mysql &"
   args:
     chdir: "/usr/local/mysql"
