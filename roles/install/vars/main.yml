@@ -3,11 +3,13 @@
 
 nginx_version: nginx-1.21.1
 apache_version: httpd-2.4.53
-mysql_version: mysql-5.6.44-linux-glibc2.12-x86_64
+mysql_version: mysql-boost-8.0.28
+boost_version: boost_1_73_0
 
 nginx_tarball_url: "http://nginx.org/download/{{ nginx_version }}.tar.gz"
 apache_tarball_url: "https://dlcdn.apache.org/httpd/{{ apache_version }}.tar.gz"
-mysql_tarball_url: "https://downloads.mysql.com/archives/get/p/23/file/{{ mysql_version }}.tar.gz"
+mysql_tarball_url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/{{ mysql_version }}.tar.gz"
+boost_tarball_url: "https://boostorg.jfrog.io/artifactory/main/release/1.73.0/source/{{ boost_version }}.tar.gz"
 
 nginx_install_dir: "/usr/local/src/nginx/"
 apache_install_dir: "/usr/local/src/apache/"

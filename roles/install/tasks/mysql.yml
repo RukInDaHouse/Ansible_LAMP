@@ -3,52 +3,41 @@
 
 - name: Download Boost
   get_url:
-    url: "https://boostorg.jfrog.io/artifactory/main/release/1.73.0/source/boost_1_73_0.tar.gz"
-    dest: "{{ mysql_install_dir }}.tar.gz"
+    url: "{{ boost_tarball_url }}"
+    dest: "{{ mysql_install_dir }}{{ boost_version }}.tar.gz"
   
 - name: Unpack Boost
   unarchive:
     copy: no
-    dest: "{{ mysql_install_dir }}boost_1_73_0"
-    src: "{{ mysql_install_dir }}boost_1_73_0.tar.gz"
+    dest: "{{ mysql_install_dir }}{{ boost_version }}"
+    src: "{{ mysql_install_dir }}{{ boost_version }}.tar.gz"
   when: nginx_source.changed
   
 - name: Download MySql sources
   get_url:
-    url: "https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.28.tar.gz"
-    dest: "{{ nginx_install_dir }}{{ nginx_version }}.tar.gz"
+    url: "{{ mysql_tarball_url }}"
+    dest: "{{ nginx_install_dir }}{{ mysql_version }}.tar.gz"
 
 - name: Unpack Mysql
   unarchive:
     copy: no
     dest: "{{ nginx_install_dir }}"
-    src: "{{ nginx_install_dir }}mysql-boost-8.0.28.tar.gz.tar.gz"
+    src: "{{ nginx_install_dir }}{{ mysql_version }}.tar.gz"
 
 - name: Configure Mysql install with Cmake
-  command: "cmake .. -DWITH_BOOST={{ mysql_install_dir }}boost_1_73_0"
+  command: "cmake .. -DWITH_BOOST={{ mysql_install_dir }}{{ boost_version }}"
   args:
-    chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
-  register: mysql_conf1
-  
+    chdir: "{{ mysql_install_dir }}{{ mysql_version }}/bld"
+
 - name: Make Mysql
   command: "make"
   args:
-    chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
-  register: mysql_conf1
+    chdir: "{{ mysql_install_dir }}{{ mysql_version }}/bld"
   
 - name: Install Mysql
   command: "make install"
   args:
-    chdir: "{{ mysql_install_dir }}mysql-8.0.28/bld"
-  register: mysql_conf1
-  
-- name: Create required Mysql dirs
-  become: yes
-  file:
-    path: "/usr/local/mysql/mysql-files"
-    state: directory
-    owner: root
-    mode: 0755  
+    chdir: "{{ mysql_install_dir }}{{ mysql_version }}/bld"
 
 - name: Configure Mysql source (Part 1)
   command: "bin/mysqld --initialize --user=mysql"
