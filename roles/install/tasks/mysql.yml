@@ -11,18 +11,17 @@
     copy: no
     dest: "{{ mysql_install_dir }}{{ boost_version }}"
     src: "{{ mysql_install_dir }}{{ boost_version }}.tar.gz"
-  when: nginx_source.changed
   
 - name: Download MySql sources
   get_url:
     url: "{{ mysql_tarball_url }}"
-    dest: "{{ nginx_install_dir }}{{ mysql_version }}.tar.gz"
+    dest: "{{ mysql_install_dir }}{{ mysql_version }}.tar.gz"
 
 - name: Unpack Mysql
   unarchive:
     copy: no
-    dest: "{{ nginx_install_dir }}"
-    src: "{{ nginx_install_dir }}{{ mysql_version }}.tar.gz"
+    dest: "{{ mysql_install_dir }}"
+    src: "{{ mysql_install_dir }}{{ mysql_version }}.tar.gz"
 
 - name: Configure Mysql install with Cmake
   command: "cmake .. -DWITH_BOOST={{ mysql_install_dir }}{{ boost_version }}"

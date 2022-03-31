@@ -1,2 +1,12 @@
 ---
 # vars file for ./roles/create_dirs
+
+nginx_version: nginx-1.21.1
+apache_version: httpd-2.4.53
+mysql_version: mysql-boost-8.0.28
+boost_version: boost_1_73_0
+
+nginx_install_dir: "/usr/local/src/nginx/"
+apache_install_dir: "/usr/local/src/apache/"
+mysql_install_dir: "/usr/local/src/mysql/"
+

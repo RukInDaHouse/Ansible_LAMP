@@ -2,7 +2,7 @@
 - name: Create required Mysql dirs (/usr/local/src/mysql/bld)
   become: yes
   file:
-    path: {{ mysql_install_dir }}bld
+    path: "{{ mysql_install_dir }}/{{ mysql_version }}/bld"
     state: directory
     owner: root
     mode: 0755
@@ -10,7 +10,7 @@
 - name: Create required Mysql dirs (/usr/local/src/mysql/boost_1_73_0)
   become: yes
   file:
-    path: {{ mysql_install_dir }}boost_1_73_0
+    path: "{{ mysql_install_dir }}boost_1_73_0"
     state: directory
     owner: root
     mode: 0755
