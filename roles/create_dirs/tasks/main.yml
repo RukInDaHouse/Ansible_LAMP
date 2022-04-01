@@ -24,6 +24,8 @@
     - libxml2-dev
     - libxslt1-dev
     - lsb-release
+    - libncurses5-dev
+    - pkg-config
     - tar
     - uuid-dev
     - unzip

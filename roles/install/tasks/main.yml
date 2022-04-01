@@ -1,11 +1,11 @@
 ---
 # tasks file for ./roles/install
 
-- name: Install Nginx
-  import_tasks: nginx.yml
+#- name: Install Nginx
+#  import_tasks: nginx.yml
   
-- name: Install Apache
-  import_tasks: apache.yml
+#- name: Install Apache
+#  import_tasks: apache.yml
 
 - name: Install MySql
   import_tasks: mysql.yml
